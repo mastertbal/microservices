@@ -1,0 +1,120 @@
+mvn spring-boot:run - to run the jar file using spring boot. Spring boot will locate the jar file automatically..
+
+java -jar target/accounts-0.0.1-SNAPSHOT.jar - to run a jar file inside the target folder
+
+
+CREATING A DOCKER FILE
+----------------------
+Inside the accounts folder, create a file exactly called Dockerfile and write the following:
+
+#Start with a base image containing Java runtime
+FROM eclipse-temurin:21-jdk
+
+# MAINTAINER instruction is deprecated in favor of using label
+# MAINTAINER eazybytes.com
+#Information around who maintains the image
+LABEL "org.opencontainers.image.authors"="eazybytes.com"
+
+# Add the application's jar to the image
+COPY target/accounts-0.0.1-SNAPSHOT.jar accounts-0.0.1-SNAPSHOT.jar
+
+# execute the application
+ENTRYPOINT ["java", "-jar", "accounts-0.0.1-SNAPSHOT.jar"]
+
+
+
+GENERATE A DOCKER IMAGE
+-----------------------
+Make sure docker engine is up and running
+
+
+Open the accounts folder in the terminal and type the following to generate a docker image:
+	docker build . -t mastertbal/accounts:s4
+
+. Means the current folder. This is where the docker file resides. If the docker file resides somewhere else, you'll need to specify the path
+
+-t means tag,
+
+mastertbal is the username of the docker hub
+
+accounts:s4 means the image file name and tag name separated by colon
+
+When you press enter, the commands inside the docker file will be executed
+
+Type:
+	docker images
+
+To see all the images created 
+
+Type:
+	docker inspect image imageId(first four values is ok)
+To see the full json configuration of the image created.
+
+
+RUNNING IMAGES
+---------------
+A running image is called a container and it starts inside an isolated environment in docker. We use:
+	docker run -p 8080:8080 mastertbal/accounts:s4
+
+-p means port mapping. Meaning, use the port 8080 on the computer to communicate with the containers port 8080. The second is the container's port. The first is the computer's port.
+
+Open postman and engage the endpoints of the accounts micro services and it should work
+
+If you see the terminal, you cannot use it anymore. This is not good and we can resolve it by running our image in a detached mode like so:
+	docker run -d -p 8080:8080 mastertbal/accounts:s4 
+
+This means docker should run the container in a detached mode and we won't see any logs in the terminal.
+
+You'll see the container id which indicates that the container is already running.
+
+This makes us to execute other docker commands we want to execute
+
+docker ps - shows all running containers
+docker ps -a - shows all containers running or stopped
+
+docker start containerId - to start a container. This is used if you want to re-start a container. To create another instance of an image use docker run command 
+docker stop containerId - to stop a container
+
+If you want to start another instance, please use another port for the computer. For example:
+	docker run -p 8081:8080 mastertbal/accounts:s4
+
+
+You can see how docker solves scalability and portability issues for us. As long as docker is on the environment, you can run any image anywhere.
+
+Another name for port mapping is port forwarding or port publishing.
+
+
+CHALLENGES WITH DOCKER FILE
+---------------------------
+- You need to be a docker expert. You need to know a lot of commands and this is a big steep learning curve.
+
+- You have to follow many best practises to make sure your containers are secured, easily and very fast to access, caching mechanism implementation.
+
+- maintaining docker files for many micro services, maintaining them, versioning them.
+
+This is where we have things like build packs, google jibs and build packs
+
+USING BUILDPACKS
+-----------------
+Created by pivotal and heroku. They followed all the best practises on generating a docker image. Now build packs is a concept. The real implementation is packeto build packs.
+
+Open loans in IntelliJ and make sure your packaging is jar in the pom.xml. Specify the following:
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <name>mastertbal/${project.artifactId}:s4</name> // this
+                    </image>
+                    ...
+                </configuration>
+            </plugin>
+
+Make sure your docker engine is running
+Open loans in terminal and type:
+	mvn spring-boot:build-image
+
+This generates a docker image from your spring boot project using build packs best practises.
+
+This process will take a while the first time, but becomes faster onwards. 
