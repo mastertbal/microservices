@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+build:
+  version: "1.0"
+
+accounts:
+  message: "Welcome to Eazybank accounts related PROD APIs"
+  contactDetails:
+    name: "Henry Cougar - PROD Lead"
+    email: "henrycougar@eazybank.com"
+  onCallSupport:
+    - (555) 392-1234
+    - (555) 203-1345
