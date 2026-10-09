@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+loans:
+  message: "Welcome to Eazybank loans related PROD APIs"
+  contactDetails:
+    name: "Henry Cougar - Dev Lead"
+    email: "henrycougar@eazybank.com"
+  onCallSupport:
+    - (555) 392-1234
+    - (555) 203-1345

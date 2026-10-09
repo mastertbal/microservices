@@ -1,0 +1,38 @@
+services:
+  accounts: # service name
+    image: "mastertbal/accounts:s4"
+    container_name: accounts-ms # else a random name will be given to it
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 700m # don't use beyond 700mb
+    networks:
+      - tbalnetwork
+  loans: # service name
+    image: "mastertbal/loans:s4"
+    container_name: loans-ms # else a random name will be given to it
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700m # don't use beyond 700mb
+    networks:
+      - tbalnetwork
+  cards: # service name
+    image: "mastertbal/cards:s4"
+    container_name: cards-ms # else a random name will be given to it
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 700m # don't use beyond 700mb
+    networks:
+      - tbalnetwork
+
+networks: # specify the network they will all be in
+  tbalnetwork: # name of the network
+    driver: "bridge" # name of the
